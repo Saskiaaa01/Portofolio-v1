@@ -1,9 +1,11 @@
+import { asset } from '../lib/asset'
+
 export const profile = {
   name: 'Saskia Syabani',
   role: 'QA dan Web Developer',
   intro: 'Saya senang menemukan kesalahan di sebuah sistem sebelum penggunanya yang menemukan.',
   fact: 'Mahasiswa Sistem Informasi di UBSI, angkatan 2024. Sehari-hari saya menguji aplikasi, merancang database, dan membangun web dengan Laravel.',
-  photo: '/images/portrait.jpg',
+  photo: asset('images/portrait.jpg'),
   linkedin: 'https://www.linkedin.com/in/saskia-syabani',
   linkedinLabel: 'linkedin.com/in/saskia-syabani',
   stats: [

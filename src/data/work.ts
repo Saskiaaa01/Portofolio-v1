@@ -1,7 +1,9 @@
+import { asset } from '../lib/asset'
+
 export const sslguard = {
   title: 'SSLGuard',
   role: 'Saya rancang dan bangun sendiri',
-  image: '/images/sslguard.jpg',
+  image: asset('images/sslguard.jpg'),
   alt: 'Halaman depan SSLGuard dengan daftar domain dan sisa hari sertifikatnya',
   story: [
     ['Masalahnya', 'Sertifikat SSL punya tanggal kedaluwarsa. Kalau lupa diperpanjang, browser langsung menandai situsnya tidak aman dan pengunjung bisa tertahan di halaman peringatan.'],
@@ -21,7 +23,7 @@ export const projects = [
   {
     title: 'SSLGuard',
     role: 'Saya rancang dan bangun sendiri',
-    image: '/images/sslguard.jpg',
+    image: asset('images/sslguard.jpg'),
     alt: sslguard.alt,
     text: 'Aplikasi web yang memeriksa masa berlaku sertifikat SSL setiap pagi dan mengirim pengingat lewat WhatsApp sebelum kedaluwarsa.',
     tags: ['Laravel', 'PHP', 'WhatsApp API'],
@@ -30,7 +32,7 @@ export const projects = [
     title: 'SIPP',
     tags: ['QA', 'Perancangan', 'Pengujian fungsional'],
     role: 'Perancangan dan QA',
-    image: '/images/sipp.jpg',
+    image: asset('images/sipp.jpg'),
     alt: 'Halaman beranda SIPP berisi pencarian layanan publik',
     text: 'Sistem Informasi Pelayanan Publik, tempat masyarakat menyampaikan pengaduan yang kemudian diteruskan ke Organisasi Perangkat Daerah. Saya ikut merancang sistemnya dan menjadi penguji: memeriksa fungsi tiap fitur, mencatat kesalahan, dan memastikan hasilnya sesuai kebutuhan pengguna.',
   },
@@ -38,16 +40,16 @@ export const projects = [
     title: 'Satu Rumah',
     tags: ['QA', 'Perancangan', 'Evaluasi kualitas'],
     role: 'Perancangan dan QA',
-    image: '/images/satu-rumah.jpg',
+    image: asset('images/satu-rumah.jpg'),
     alt: 'Halaman masuk portal verifikator Satu Rumah',
     text: 'Portal untuk memverifikasi berkas teknis dan site plan perumahan, menjadwalkan survei lapangan, sampai menerbitkan Berita Acara secara digital. Saya ikut dalam perancangan, menguji fitur dan fungsinya, menandai bagian yang belum sesuai, dan membantu mengevaluasi kualitas aplikasi berdasarkan kebutuhan yang sudah ditetapkan.',
   },
 ]
 
 export const certificates = [
-  { image: '/images/cert-ai.jpg', alt: 'Sertifikat AI Career Readiness Training atas nama Saskia Syabani', zoom: 'Perbesar sertifikat AI Career Readiness Training', when: '30 September 2026', title: 'AI Career Readiness Training', by: 'ASEAN Foundation, didukung LinkedIn', text: 'Program ASEAN Ahead tentang kesiapan karier di era AI: strategi karier, optimasi profil LinkedIn, CV ramah ATS, dan latihan wawancara dengan bantuan AI.' },
-  { image: '/images/cert-db.jpg', alt: 'Sertifikat Database System dari PT Netkrom Solusindo atas nama Saskia Syabani', zoom: 'Perbesar sertifikat Database System', position: 'center 30%', when: '23 Juli 2025', title: 'Database System', by: 'PT Netkrom Solusindo, predikat Menengah', text: 'Lulus ujian yang mencakup model relasional, ERD, normalisasi, SQL (fungsi agregat, join, subquery), DBMS, keamanan basis data, serta backup dan recovery.' },
-  { image: '/images/cert-seminar.jpg', alt: 'Sertifikat peserta seminar Acceleration of Information Technology for IT Career', zoom: 'Perbesar sertifikat seminar', when: '21 November 2024', title: 'Acceleration of Information Technology for IT Career', by: 'Prodi Sistem Informasi UBSI', text: 'Peserta seminar di Aula UBSI Kampus Kota Tasikmalaya, bersama pembicara Wahyu Bintoro, S.Psi dan Deddy Supriadi, M.Kom.' },
+  { image: asset('images/cert-ai.jpg'), alt: 'Sertifikat AI Career Readiness Training atas nama Saskia Syabani', zoom: 'Perbesar sertifikat AI Career Readiness Training', when: '30 September 2026', title: 'AI Career Readiness Training', by: 'ASEAN Foundation, didukung LinkedIn', text: 'Program ASEAN Ahead tentang kesiapan karier di era AI: strategi karier, optimasi profil LinkedIn, CV ramah ATS, dan latihan wawancara dengan bantuan AI.' },
+  { image: asset('images/cert-db.jpg'), alt: 'Sertifikat Database System dari PT Netkrom Solusindo atas nama Saskia Syabani', zoom: 'Perbesar sertifikat Database System', position: 'center 30%', when: '23 Juli 2025', title: 'Database System', by: 'PT Netkrom Solusindo, predikat Menengah', text: 'Lulus ujian yang mencakup model relasional, ERD, normalisasi, SQL (fungsi agregat, join, subquery), DBMS, keamanan basis data, serta backup dan recovery.' },
+  { image: asset('images/cert-seminar.jpg'), alt: 'Sertifikat peserta seminar Acceleration of Information Technology for IT Career', zoom: 'Perbesar sertifikat seminar', when: '21 November 2024', title: 'Acceleration of Information Technology for IT Career', by: 'Prodi Sistem Informasi UBSI', text: 'Peserta seminar di Aula UBSI Kampus Kota Tasikmalaya, bersama pembicara Wahyu Bintoro, S.Psi dan Deddy Supriadi, M.Kom.' },
 ]
 
 export const skills = [
