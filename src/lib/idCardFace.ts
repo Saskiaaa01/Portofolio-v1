@@ -7,16 +7,27 @@ const NAVY = '#0d1626'
 const BLUE = '#2f7bf5'
 const INK = '#0b1424'
 const PHOTO_BG = '#dfe2e6'
-const font = (w: number, s: number) => `${w} ${s}px "Plus Jakarta Sans", system-ui, sans-serif`
-const body = (w: number, s: number) => `${w} ${s}px "Plus Jakarta Sans", system-ui, sans-serif`
+const font = (w: number, s: number) => `${w} ${s}px "Geist Variable", system-ui, sans-serif`
+const serif = (s: number) => `italic 400 ${s}px "Instrument Serif", Georgia, serif`
+const body = font
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((ok, fail) => {
     const img = new Image()
+    img.crossOrigin = 'anonymous' // foto dari Supabase Storage harus bisa dipakai di kanvas
     img.onload = () => ok(img)
     img.onerror = fail
     img.src = src
   })
+
+// Digambar di 1024px agar detailnya tajam, lalu diperkecil ke 768px: tekstur lebih ringan untuk GPU laptop
+function toTexture(el: HTMLCanvasElement) {
+  const out = document.createElement('canvas')
+  out.width = 768
+  out.height = Math.round((el.height * 768) / el.width)
+  out.getContext('2d')!.drawImage(el, 0, 0, out.width, out.height)
+  return out.toDataURL('image/webp', 0.9)
+}
 
 function canvas() {
   const el = document.createElement('canvas')
@@ -25,11 +36,11 @@ function canvas() {
   return [el, el.getContext('2d')!] as const
 }
 
-const loadFonts = () => Promise.all([document.fonts.load(font(700, 90)), document.fonts.load(body(500, 30))])
+const loadFonts = () => Promise.all([document.fonts.load(font(700, 90)), document.fonts.load(serif(90)), document.fonts.load(body(500, 30))])
 
 // Muka depan: foto di blok abu-abu, panel putih dengan lekukan, nama besar, peran dan nomor ID kecil
-export async function makeIdCardFace(): Promise<string> {
-  const [photo] = await Promise.all([loadImage(profile.photo), loadFonts()])
+export async function makeIdCardFace(photoUrl: string): Promise<string> {
+  const [photo] = await Promise.all([loadImage(photoUrl), loadFonts()])
   const [el, c] = canvas()
 
   c.fillStyle = '#ffffff'
@@ -49,22 +60,41 @@ export async function makeIdCardFace(): Promise<string> {
   c.fillStyle = PHOTO_BG
   c.fill()
 
-  // foto dilebur ke latar abu-abu (latar putih foto ikut jadi abu-abu)
+  // foto diperkecil dan rata bawah agar kepala punya ruang; tepinya dipudarkan lalu dilebur ke abu-abu
+  const ps = W * 0.88
+  const soft = document.createElement('canvas')
+  soft.width = soft.height = ps
+  const sc = soft.getContext('2d')!
+  sc.drawImage(photo, 0, 0, ps, ps)
+  sc.globalCompositeOperation = 'destination-in'
+  const fadeX = sc.createLinearGradient(0, 0, ps, 0)
+  fadeX.addColorStop(0, 'transparent')
+  fadeX.addColorStop(0.1, '#000')
+  fadeX.addColorStop(0.9, '#000')
+  fadeX.addColorStop(1, 'transparent')
+  sc.fillStyle = fadeX
+  sc.fillRect(0, 0, ps, ps)
+  const fadeY = sc.createLinearGradient(0, 0, 0, ps)
+  fadeY.addColorStop(0, 'transparent')
+  fadeY.addColorStop(0.08, '#000')
+  sc.fillStyle = fadeY
+  sc.fillRect(0, 0, ps, ps)
   c.save()
   c.clip()
   c.globalCompositeOperation = 'multiply'
-  const k = Math.max(W / photo.width, right / photo.height)
-  c.drawImage(photo, (W - photo.width * k) / 2, 0, photo.width * k, photo.height * k)
+  c.drawImage(soft, (W - ps) / 2, right - ps, ps, ps)
   c.restore()
 
   // nama besar dua baris
   c.fillStyle = INK
   c.textBaseline = 'alphabetic'
-  c.font = font(700, 96)
-  c.letterSpacing = '-3px'
+  c.font = font(700, 118)
+  c.letterSpacing = '-5px'
   const [first, last] = profile.name.split(' ')
   c.fillText(first, 72, 1250)
-  c.fillText(last, 72, 1350)
+  c.fillStyle = BLUE
+  c.font = serif(142)
+  c.fillText(last, 72, 1385)
 
   // peran dan nomor ID
   c.letterSpacing = '0px'
@@ -74,7 +104,7 @@ export async function makeIdCardFace(): Promise<string> {
   c.textAlign = 'right'
   c.fillText(profile.idCard.id, W - 72, H - 90)
 
-  return el.toDataURL('image/webp', 0.92)
+  return toTexture(el)
 }
 
 // Muka belakang: navy polos dengan kata merek besar yang dibaca vertikal
@@ -88,8 +118,8 @@ export async function makeIdCardBack(): Promise<string> {
   c.translate(W / 2 + 40, H / 2)
   c.rotate(-Math.PI / 2)
   c.fillStyle = '#ffffff'
-  c.font = font(700, 340)
-  c.letterSpacing = '-10px'
+  c.font = serif(420)
+  c.letterSpacing = '-8px'
   c.textAlign = 'center'
   c.textBaseline = 'middle'
   c.fillText(profile.name.split(' ')[0], 0, 0)
@@ -102,5 +132,5 @@ export async function makeIdCardBack(): Promise<string> {
   c.textBaseline = 'alphabetic'
   c.fillText(profile.idCard.tag, 72, H - 90)
 
-  return el.toDataURL('image/webp', 0.92)
+  return toTexture(el)
 }

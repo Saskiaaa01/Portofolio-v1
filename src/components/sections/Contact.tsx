@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { profile } from '../../data/profile'
+import { useContent } from '../../lib/content'
 import { makeIdCardBack, makeIdCardFace } from '../../lib/idCardFace'
 import { makeStrapTexture } from '../../lib/strapTexture'
 
@@ -7,6 +8,7 @@ import { makeStrapTexture } from '../../lib/strapTexture'
 const Lanyard = lazy(() => import('../reactbits/Lanyard'))
 
 export function Contact() {
+  const { hero } = useContent()
   const boxRef = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
   const [face, setFace] = useState<string>()
@@ -25,13 +27,13 @@ export function Contact() {
     if (!near) return
     makeStrapTexture().then(setStrap, () => {})
     makeIdCardBack().then(setBack, () => {})
-    makeIdCardFace().then(setFace, () => setFace(profile.photo))
-  }, [near])
+    makeIdCardFace(hero.photo).then(setFace, () => setFace(hero.photo))
+  }, [near, hero.photo])
 
   return (
     <section id="kontak" className="contact">
       <div className="wrap">
-        <div className="contact-panel">
+        <div className="contact-panel" data-reveal>
           <div ref={boxRef} className="lanyard-box" aria-hidden>
             {near && face && (
               <Suspense fallback={null}>
@@ -43,7 +45,7 @@ export function Contact() {
             <p className="eyebrow" style={{ color: '#8ea1c6' }}>Kontak</p>
             <h2>Mari kerja <em>bareng</em></h2>
             <p>Saya sedang mencari posisi di bidang QA, basis data, atau pengembangan web. Kalau tim Anda butuh orang yang suka mengecek sampai detail, mari ngobrol.</p>
-            <a className="btn" href={profile.linkedin} target="_blank" rel="noopener noreferrer">Hubungi saya di LinkedIn ↗</a>
+            <a className="btn" href={hero.linkedin} target="_blank" rel="noopener noreferrer">Hubungi saya di LinkedIn ↗</a>
             <div className="link">{profile.linkedinLabel}</div>
           </div>
         </div>

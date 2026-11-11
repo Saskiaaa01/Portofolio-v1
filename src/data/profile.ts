@@ -3,16 +3,16 @@ import { asset } from '../lib/asset'
 export const profile = {
   name: 'Saskia Syabani',
   role: 'QA dan Web Developer',
-  intro: 'Saya senang menemukan kesalahan di sebuah sistem sebelum penggunanya yang menemukan.',
-  fact: 'Mahasiswa Sistem Informasi di UBSI, angkatan 2024. Sehari-hari saya menguji aplikasi, merancang database, dan membangun web dengan Laravel.',
+  intro: 'Mahasiswa Sistem Informasi yang berfokus pada quality assurance, basis data, dan pengembangan web.',
+  fact: 'Saat ini magang di Diskominfo Kota Tasikmalaya.',
   photo: asset('images/portrait.jpg'),
   linkedin: 'https://www.linkedin.com/in/saskia-syabani',
   linkedinLabel: 'linkedin.com/in/saskia-syabani',
   stats: [
-    { value: '3,89', label: 'IPK dari 4,00' },
-    { value: '3', label: 'sistem dikerjakan' },
-    { value: '3', label: 'sertifikat' },
-    { value: '2', label: 'pengalaman kerja' },
+    { to: 3.89, decimals: 2, label: 'IPK dari 4,00' },
+    { to: 3, decimals: 0, label: 'sistem dikerjakan' },
+    { to: 3, decimals: 0, label: 'sertifikat' },
+    { to: 2, decimals: 0, label: 'pengalaman kerja' },
   ],
   idCard: { id: 'ID #SS2024', tag: 'QA · Database · Web' },
 }
