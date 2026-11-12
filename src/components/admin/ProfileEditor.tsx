@@ -55,7 +55,6 @@ export function ProfileEditor({ db }: { db: SupabaseClient }) {
           <img src={values.photo_url || hero.photo} alt="" />
           <h3>{first} <em>{last}</em></h3>
           <p>{values.intro || hero.intro}</p>
-          <p className="soft">{values.fact || hero.fact}</p>
         </div>
       </div>
     </div>

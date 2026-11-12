@@ -9,7 +9,7 @@ export type Skill = { title: string; text: string; chips: string[] }
 export type Job = { year: string; when: string; title: string; at: string; text: string; image?: string }
 export type Activity = { title: string; meta: string; text: string; image?: string }
 export type Content = {
-  hero: { intro: string; fact: string; photo: string; linkedin: string }
+  hero: { intro: string; photo: string; linkedin: string }
   projects: Project[]
   certificates: Certificate[]
   skills: Skill[]
@@ -19,7 +19,7 @@ export type Content = {
 
 // Konten bawaan (dari src/data). Dipakai saat Supabase belum disambungkan, atau tabelnya masih kosong.
 const fallback: Content = {
-  hero: { intro: staticProfile.intro, fact: staticProfile.fact, photo: staticProfile.photo, linkedin: staticProfile.linkedin },
+  hero: { intro: staticProfile.intro, photo: staticProfile.photo, linkedin: staticProfile.linkedin },
   projects: staticProjects,
   certificates: staticCerts,
   skills: staticSkills,
@@ -47,7 +47,6 @@ async function load(): Promise<Content | null> {
   return {
     hero: {
       intro: str(p?.intro) || fallback.hero.intro,
-      fact: str(p?.fact) || fallback.hero.fact,
       photo: str(p?.photo_url) || fallback.hero.photo,
       linkedin: str(p?.linkedin_url) || fallback.hero.linkedin,
     },

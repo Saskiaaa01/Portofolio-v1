@@ -50,7 +50,13 @@ function Navbar() {
 }
 
 export function Hero() {
-  const { hero } = useContent()
+  const { hero, projects, certificates, jobs } = useContent()
+  const stats = [
+    { to: profile.gpa, decimals: 2, label: 'IPK dari 4,00' },
+    { to: projects.length, decimals: 0, label: 'sistem dikerjakan' },
+    { to: certificates.length, decimals: 0, label: 'sertifikat' },
+    { to: jobs.length, decimals: 0, label: 'pengalaman kerja' },
+  ]
   const [first, last] = profile.name.split(' ')
   return (
     <header id="top">
@@ -63,13 +69,12 @@ export function Hero() {
             <SplitText text={last} tag="span" textAlign="left" effect="rise" trigger="load" delay={0.35} />
           </h1>
           <p className="lede" data-reveal>{hero.intro}</p>
-          <p className="fact" data-reveal>{hero.fact}</p>
           <div className="actions" data-reveal>
             <a className="btn solid" href="#proyek">Lihat proyek ↗</a>
             <a className="btn line" href={hero.linkedin} target="_blank" rel="noopener noreferrer">Buka LinkedIn</a>
           </div>
           <div className="statbar glass" data-reveal>
-            {profile.stats.map((s) => (
+            {stats.map((s) => (
               <div key={s.label}>
                 <b><CountUp to={s.to} decimals={s.decimals} /></b>
                 <span>{s.label}</span>

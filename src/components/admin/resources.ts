@@ -95,7 +95,6 @@ export const resources: Resource[] = [
 
 export const profileFields: Field[] = [
   { key: 'intro', label: 'Kalimat pembuka (hero)', type: 'textarea', hint: 'Satu kalimat singkat di bawah nama' },
-  { key: 'fact', label: 'Keterangan singkat (hero)', type: 'textarea' },
   { key: 'photo_url', label: 'Foto profil', type: 'image' },
   { key: 'linkedin_url', label: 'Tautan LinkedIn', type: 'text' },
 ]

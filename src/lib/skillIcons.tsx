@@ -1,4 +1,4 @@
-import { BookOpen, Bug, ChartColumn, ClipboardCheck, Database, DatabaseBackup, FileSpreadsheet, FileText, GitMerge, Network, SearchCheck, Server, Table2 } from 'lucide-react'
+import { BookOpen, Bug, ChartColumn, ClipboardCheck, CodeXml, Database, DatabaseBackup, FileSpreadsheet, FileText, GitMerge, Network, SearchCheck, Server, Sparkles, Table2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { siGit, siGithub, siLaravel, siPhp, siWhatsapp, type SimpleIcon } from 'simple-icons'
 
@@ -36,3 +36,16 @@ const icons: Record<string, ReactNode> = {
 
 // Chip tanpa ikon terdaftar tetap tampil sebagai teks saja
 export const skillIcon = (label: string) => icons[label] ?? null
+
+// Ikon kecil cadangan untuk keahlian yang belum terdaftar, supaya kotaknya tidak kosong
+export const fallbackIcon = <Sparkles size={S} aria-hidden />
+
+// Ikon kelompok keahlian, dipilih dari kata di judulnya
+export const categoryIcon = (title: string): ReactNode => {
+  const t = title.toLowerCase()
+  if (/quality|qa|uji|test/.test(t)) return <ClipboardCheck size={S} aria-hidden />
+  if (/data|database|sql/.test(t)) return <Database size={S} aria-hidden />
+  if (/web|program|develop|kode|code/.test(t)) return <CodeXml size={S} aria-hidden />
+  if (/analis|administrasi|dokumen/.test(t)) return <FileText size={S} aria-hidden />
+  return fallbackIcon
+}

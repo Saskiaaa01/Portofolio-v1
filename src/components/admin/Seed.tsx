@@ -23,7 +23,7 @@ export function Seed({ db, onChanged }: { db: SupabaseClient; onChanged: () => v
     const out: [string, 'ok' | 'skip' | 'error'][] = []
     const { count: pc } = await db.from('profile').select('*', { count: 'exact', head: true })
     if (!pc) {
-      const { error } = await db.from('profile').insert({ id: 1, intro: c.hero.intro, fact: c.hero.fact, photo_url: c.hero.photo, linkedin_url: c.hero.linkedin })
+      const { error } = await db.from('profile').insert({ id: 1, intro: c.hero.intro, photo_url: c.hero.photo, linkedin_url: c.hero.linkedin })
       out.push(error ? [`profile: gagal (${error.message})`, 'error'] : ['profile: terisi', 'ok'])
     } else out.push(['profile: dilewati (sudah ada isi)', 'skip'])
     for (const [table, data] of Object.entries(rows)) {
