@@ -1,6 +1,8 @@
+import { DatabaseZap } from 'lucide-react'
 import { useState } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { staticContent as c } from '../../lib/content'
+import { useToast } from './Toast'
 
 // Isi awal database dari konten bawaan situs. Hanya mengisi tabel yang masih kosong, jadi aman ditekan berulang.
 const rows: Record<string, Record<string, unknown>[]> = {
@@ -11,43 +13,51 @@ const rows: Record<string, Record<string, unknown>[]> = {
   activities: c.activities.map((a, sort) => ({ title: a.title, meta: a.meta, text: a.text, sort })),
 }
 
-export function Seed({ db }: { db: SupabaseClient }) {
+export function Seed({ db, onChanged }: { db: SupabaseClient; onChanged: () => void }) {
+  const toast = useToast()
   const [busy, setBusy] = useState(false)
-  const [log, setLog] = useState<string[]>([])
+  const [log, setLog] = useState<[string, 'ok' | 'skip' | 'error'][]>([])
 
   const run = async () => {
     setBusy(true)
-    const out: string[] = []
+    const out: [string, 'ok' | 'skip' | 'error'][] = []
     const { count: pc } = await db.from('profile').select('*', { count: 'exact', head: true })
     if (!pc) {
       const { error } = await db.from('profile').insert({ id: 1, intro: c.hero.intro, fact: c.hero.fact, photo_url: c.hero.photo, linkedin_url: c.hero.linkedin })
-      out.push(error ? `profile: gagal (${error.message})` : 'profile: terisi')
-    } else out.push('profile: dilewati (sudah ada isi)')
+      out.push(error ? [`profile: gagal (${error.message})`, 'error'] : ['profile: terisi', 'ok'])
+    } else out.push(['profile: dilewati (sudah ada isi)', 'skip'])
     for (const [table, data] of Object.entries(rows)) {
       const { count } = await db.from(table).select('*', { count: 'exact', head: true })
       if (count) {
-        out.push(`${table}: dilewati (sudah ada ${count} baris)`)
+        out.push([`${table}: dilewati (sudah ada ${count} baris)`, 'skip'])
         continue
       }
       const { error } = await db.from(table).insert(data)
-      out.push(error ? `${table}: gagal (${error.message})` : `${table}: ${data.length} baris terisi`)
+      out.push(error ? [`${table}: gagal (${error.message})`, 'error'] : [`${table}: ${data.length} baris terisi`, 'ok'])
     }
     setLog(out)
     setBusy(false)
+    onChanged()
+    toast(out.some(([, k]) => k === 'error') ? 'Sebagian gagal, lihat daftar.' : 'Impor selesai.', out.some(([, k]) => k === 'error') ? 'error' : 'ok')
   }
 
   return (
     <div>
-      <h2>Impor data awal</h2>
-      <p className="adm-muted">Menyalin konten yang sekarang tampil di situs ke database, supaya bisa Anda ubah dari dashboard. Tabel yang sudah berisi tidak disentuh.</p>
-      <div className="adm-actions">
-        <button className="adm-btn solid" onClick={run} disabled={busy}>{busy ? 'Mengimpor…' : 'Impor sekarang'}</button>
+      <div className="adm-head">
+        <div>
+          <h2>Impor data awal</h2>
+          <p className="adm-muted">Menyalin konten yang sekarang tampil di situs ke database, supaya bisa Anda ubah dari dashboard. Tabel yang sudah berisi tidak disentuh.</p>
+        </div>
       </div>
-      {log.length > 0 && (
-        <ul className="adm-log">
-          {log.map((l) => <li key={l}>{l}</li>)}
-        </ul>
-      )}
+      <div className="adm-panel adm-seed">
+        <DatabaseZap size={32} aria-hidden />
+        <button className="adm-btn solid" onClick={run} disabled={busy}>{busy ? 'Mengimpor…' : 'Impor sekarang'}</button>
+        {log.length > 0 && (
+          <ul className="adm-log">
+            {log.map(([text, kind]) => <li key={text} className={kind}>{text}</li>)}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }
