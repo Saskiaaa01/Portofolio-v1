@@ -1,13 +1,13 @@
 import { GripVertical, Pencil, Plus, Search, Trash2, X } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { FieldInput, toPayload, type Values } from './Form'
 import type { Resource } from './resources'
 import { useToast } from './Toast'
 
-type Props = { db: SupabaseClient; resource: Resource; icon: React.ReactNode; onChanged: () => void }
+type Props = { db: SupabaseClient; resource: Resource; icon: React.ReactNode; onChanged: () => void; autoNew?: boolean }
 
-export function ResourceEditor({ db, resource, icon, onChanged }: Props) {
+export function ResourceEditor({ db, resource, icon, onChanged, autoNew }: Props) {
   const toast = useToast()
   const [rows, setRows] = useState<Values[]>([])
   const [loading, setLoading] = useState(true)
@@ -36,7 +36,16 @@ export function ResourceEditor({ db, resource, icon, onChanged }: Props) {
     return () => removeEventListener('keydown', onKey)
   }, [editing])
 
-  const startNew = () => setEditing({ sort: rows.length ? Math.max(...rows.map((r) => r.sort ?? 0)) + 1 : 0 })
+  const startNew = useCallback(() => setEditing({ sort: rows.length ? Math.max(...rows.map((r) => r.sort ?? 0)) + 1 : 0 }), [rows])
+
+  // Datang dari "Tambah cepat" di Ringkasan (#/admin/proyek/baru): langsung buka form, lalu bersihkan /baru dari alamat
+  const opened = useRef(false)
+  useEffect(() => {
+    if (!autoNew || loading || opened.current) return
+    opened.current = true
+    startNew()
+    history.replaceState(null, '', `#/admin/${resource.id}`)
+  }, [autoNew, loading, resource.id, startNew])
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault()

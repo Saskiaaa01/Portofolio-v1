@@ -1,8 +1,9 @@
-import { ArrowUpRight, Award, Briefcase, DatabaseZap, FolderKanban, LayoutDashboard, LogOut, PanelLeftClose, PanelLeftOpen, Sparkles, UserRound, Users } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Award, Briefcase, DatabaseZap, FolderKanban, LayoutDashboard, LogOut, PanelLeftClose, PanelLeftOpen, Plus, Sparkles, UserRound, Users } from 'lucide-react'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { Session, SupabaseClient } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabase'
 import '../../styles/admin.css'
+import StaggeredMenu from '../reactbits/StaggeredMenu'
 import { CountUp } from '../ui/CountUp'
 import { ProfileEditor } from './ProfileEditor'
 import { ResourceEditor } from './ResourceEditor'
@@ -75,14 +76,35 @@ function Login({ db }: { db: SupabaseClient }) {
   )
 }
 
-type Tab = 'ringkasan' | 'profil' | 'impor' | string
+type Tab = string
+
+// Tab dashboard ada di hash (#/admin/proyek, #/admin/proyek/baru) supaya tombol kembali browser dan menu mobile berfungsi
+const known = ['ringkasan', 'profil', 'impor', ...resources.map((r) => r.id)]
+const parse = () => {
+  const [, , tab = 'ringkasan', extra] = location.hash.split('/')
+  return { tab: known.includes(tab) || tab === 'keluar' ? tab : 'ringkasan', isNew: extra === 'baru' }
+}
+const href = (tab: Tab, isNew = false) => `#/admin${tab === 'ringkasan' ? '' : `/${tab}`}${isNew ? '/baru' : ''}`
+const go = (tab: Tab, isNew = false) => {
+  location.hash = href(tab, isNew)
+}
+
+function useRoute() {
+  const [route, setRoute] = useState(parse)
+  useEffect(() => {
+    const on = () => setRoute(parse())
+    addEventListener('hashchange', on)
+    return () => removeEventListener('hashchange', on)
+  }, [])
+  return route
+}
 
 const greeting = () => {
   const h = new Date().getHours()
   return h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam'
 }
 
-function Overview({ counts, go }: { counts: Record<string, number>; go: (t: Tab) => void }) {
+function Overview({ counts }: { counts: Record<string, number> }) {
   return (
     <div>
       <div className="adm-hello">
@@ -101,12 +123,12 @@ function Overview({ counts, go }: { counts: Record<string, number>; go: (t: Tab)
         ))}
       </div>
       <div className="adm-quick">
-        <h3>Aksi cepat</h3>
+        <h3>Tambah cepat</h3>
         <div className="adm-actions">
+          {resources.map((r) => (
+            <button key={r.id} className="adm-btn" onClick={() => go(r.id, true)}><Plus size={16} aria-hidden /> {r.label}</button>
+          ))}
           <button className="adm-btn" onClick={() => go('profil')}><UserRound size={16} aria-hidden /> Ubah profil</button>
-          <button className="adm-btn" onClick={() => go('proyek')}><FolderKanban size={16} aria-hidden /> Kelola proyek</button>
-          <button className="adm-btn" onClick={() => go('sertifikat')}><Award size={16} aria-hidden /> Kelola sertifikat</button>
-          <button className="adm-btn" onClick={() => go('impor')}><DatabaseZap size={16} aria-hidden /> Impor data awal</button>
         </div>
         <p className="adm-muted">Bagian yang masih kosong memakai konten bawaan situs, jadi tidak ada yang rusak sebelum Anda mengisinya.</p>
       </div>
@@ -115,7 +137,7 @@ function Overview({ counts, go }: { counts: Record<string, number>; go: (t: Tab)
 }
 
 function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
-  const [tab, setTab] = useState<Tab>('ringkasan')
+  const { tab, isNew } = useRoute()
   const [admin, setAdmin] = useState<boolean | undefined>()
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [mini, setMini] = useState(() => localStorage.getItem('adm-mini') === '1')
@@ -134,6 +156,12 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
   }, [admin, loadCounts])
 
   const logout = () => db.auth.signOut()
+  useEffect(() => {
+    if (tab === 'keluar') {
+      logout()
+      go('ringkasan')
+    }
+  })
 
   if (admin === undefined) return <main className="adm-center"><p className="adm-muted">Memeriksa akses…</p></main>
   if (!admin) {
@@ -159,6 +187,20 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
   return (
     <ToastProvider>
       <div className={`adm-app${mini ? ' mini' : ''}`}>
+        <div className="adm-mobile-menu">
+          <StaggeredMenu
+            isFixed
+            displayItemNumbering={false}
+            logoText="Saskia · Dashboard"
+            items={[...nav.map((n) => ({ label: n.label, link: href(n.id), ariaLabel: `Buka ${n.label}` })), { label: 'Keluar', link: href('keluar'), ariaLabel: 'Keluar dari dashboard' }]}
+            socialItems={[{ label: 'Lihat situs', link: siteUrl() }]}
+            colors={['#0d1626', '#2f7bf5']}
+            accentColor="#2f7bf5"
+            menuButtonColor="#0d1626"
+            openMenuButtonColor="#ffffff"
+          />
+        </div>
+
         <aside className="adm-side">
           <div className="adm-brand">
             <i>S</i>
@@ -169,7 +211,7 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
           </div>
           <nav aria-label="Bagian dashboard">
             {nav.map((n, i) => (
-              <button key={n.id} title={n.label} aria-label={n.label} style={{ '--i': i } as React.CSSProperties} className={tab === n.id ? 'on' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => setTab(n.id)}>
+              <button key={n.id} title={n.label} aria-label={n.label} style={{ '--i': i } as React.CSSProperties} className={tab === n.id ? 'on' : ''} aria-current={tab === n.id ? 'page' : undefined} onClick={() => go(n.id)}>
                 {n.icon}
                 <span>{n.label}</span>
                 {n.count !== undefined && <em>{n.count}</em>}
@@ -188,15 +230,16 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
               <button className="adm-icon mini-toggle" onClick={toggleMini} aria-label={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'} title={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'}>
                 {mini ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
               </button>
+              {tab !== 'ringkasan' && <a className="adm-back-btn" href={href('ringkasan')}><ArrowLeft size={16} aria-hidden /> Ringkasan</a>}
               <span>{nav.find((n) => n.id === tab)?.label}</span>
             </div>
             <a className="adm-btn" href={siteUrl()} target="_blank" rel="noopener noreferrer">Lihat situs <ArrowUpRight size={16} aria-hidden /></a>
           </div>
           <div className="adm-view" key={tab}>
-            {tab === 'ringkasan' && <Overview counts={counts} go={setTab} />}
+            {tab === 'ringkasan' && <Overview counts={counts} />}
             {tab === 'profil' && <ProfileEditor db={db} />}
             {tab === 'impor' && <Seed db={db} onChanged={loadCounts} />}
-            {current && <ResourceEditor key={current.id} db={db} resource={current} icon={resourceIcons[current.id]} onChanged={loadCounts} />}
+            {current && <ResourceEditor key={current.id} db={db} resource={current} icon={resourceIcons[current.id]} onChanged={loadCounts} autoNew={isNew} />}
           </div>
         </main>
       </div>

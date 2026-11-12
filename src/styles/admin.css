@@ -84,6 +84,9 @@
 .adm-crumb { display: flex; align-items: center; gap: 12px; }
 .adm-crumb span { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); }
 .mini-toggle { border: 1px solid var(--line); }
+.adm-mobile-menu { display: none; }
+.adm-back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, 0.9); font-size: 13.5px; font-weight: 600; letter-spacing: 0; color: var(--ink); text-decoration: none; transition: transform 0.2s, border-color 0.2s; }
+.adm-back-btn:hover { border-color: var(--blue); transform: translateX(-2px); }
 .adm-view { animation: adm-fade 0.35s both; }
 
 /* ---------- ringkasan ---------- */
@@ -194,13 +197,9 @@
 @media (max-width: 960px) {
   .mini-toggle { display: none; }
   .adm-app { grid-template-columns: 1fr; }
-  .adm-side { position: static; flex-direction: row; align-items: center; height: auto; padding: 12px; overflow-x: auto; }
-  .adm-brand { flex: none; }
-  .adm-side nav { display: flex; flex: 1; overflow-x: auto; }
-  .adm-side nav button { flex: none; }
-  .adm-side nav span { flex: none; }
-  .adm-user { display: none; }
-  .adm-main { padding: 18px 16px 50px; }
+  .adm-side { display: none; }
+  .adm-mobile-menu { display: block; }
+  .adm-main { padding: 84px 16px 50px; }
   .adm-profile { grid-template-columns: 1fr; }
   .adm-preview { position: static; }
   .adm-item-actions, .adm-grip { opacity: 1; transform: none; }

@@ -110,11 +110,12 @@ p { max-width: 62ch; }
 .nav .btn { padding: 10px 20px; font-size: 14px; border-radius: 12px; }
 @media (max-width: 860px) {
   .nav nav, .nav .btn { display: none; }
+  .nav .brand { visibility: hidden; }
   .nav { box-shadow: none; background: none; border: 0; backdrop-filter: none; padding-left: 4px; }
 }
 
 /* ---------- hero ---------- */
-.hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: center; padding: 44px 0 24px; }
+.hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: center; padding-block: 44px 24px; }
 .hero h1 {
   margin-bottom: 26px;
   font-size: clamp(60px, 9.4vw, 132px);
@@ -172,7 +173,7 @@ p { max-width: 62ch; }
 .chip-top { left: auto; right: 0; top: 4%; bottom: auto; }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; }
-  .hero-photo { order: -1; justify-self: center; width: min(78%, 360px); }
+  .hero-photo { justify-self: center; width: min(78%, 360px); }
   .statbar { grid-template-columns: repeat(2, 1fr); row-gap: 18px; }
   .statbar div:nth-child(3) { border-left: 0; }
   .chip { font-size: 18px; padding: 10px 16px; }
@@ -233,6 +234,7 @@ p { max-width: 62ch; }
 .track .fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: linear-gradient(90deg, var(--sky), var(--blue)); transition: width 0.35s; }
 .pin { position: absolute; top: 50%; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #17305f; background: #4b6190; transform: translate(-50%, -50%); }
 .pin.on { background: var(--sky); box-shadow: 0 0 0 5px rgba(91, 180, 255, 0.25); }
+.pin::after { content: ""; position: absolute; inset: -12px; }
 .pin span { white-space: nowrap; position: absolute; top: 28px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: #c8d5ee; }
 .ends { display: flex; justify-content: space-between; margin: 58px 0 18px; font-size: 12px; color: #8ea1c6; }
 .bubble { padding: 16px 18px; border-radius: 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.16); font-size: 14.5px; line-height: 1.55; min-height: 110px; }
@@ -368,9 +370,9 @@ p { max-width: 62ch; }
 .pcard:hover .shot img { transform: scale(1.04); }
 
 /* ---------- footer ---------- */
-.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 26px 0 40px; font-size: 13.5px; color: var(--muted); }
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 14px; padding-block: 26px 40px; font-size: 13.5px; color: var(--muted); }
 .foot nav { display: flex; gap: 22px; }
-.foot a { text-decoration: none; }
+.foot a { display: inline-block; padding: 10px 2px; text-decoration: none; }
 .foot a:hover { color: var(--blue); }
 
 /* ---------- lightbox ---------- */

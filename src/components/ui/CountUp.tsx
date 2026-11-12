@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { gsap, ScrollTrigger } from '../../lib/gsap'
+import { gsap } from '../../lib/gsap'
 
 const fmt = (n: number, decimals: number) => n.toFixed(decimals).replace('.', ',')
 
-// Angka naik dari 0 setiap section masuk layar, dan kembali ke 0 saat keluar layar sehingga main lagi saat di-scroll ulang
+// Angka naik dari 0 satu kali saja, saat minimal separuhnya terlihat; setelah itu tetap di angka akhir (tidak reset saat di-scroll).
+// IntersectionObserver (bukan posisi scroll) supaya tetap andal di HP: bar alamat yang naik-turun tidak menggeser pemicu.
 export function CountUp({ to, decimals = 0, duration = 1.8 }: { to: number; decimals?: number; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null)
 
@@ -13,21 +14,23 @@ export function CountUp({ to, decimals = 0, duration = 1.8 }: { to: number; deci
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const state = { v: 0 }
     let tween: gsap.core.Tween | undefined
+    let guard: number | undefined
     const show = () => (el.textContent = fmt(state.v, decimals))
-    const play = () => {
-      tween?.kill()
-      state.v = 0
-      tween = gsap.to(state, { v: to, duration, ease: 'power3.out', onUpdate: show })
-    }
-    const reset = () => {
-      tween?.kill()
-      state.v = 0
-      show()
-    }
     show()
-    const st = ScrollTrigger.create({ trigger: el, start: 'top 85%', end: 'bottom 15%', onEnter: play, onEnterBack: play, onLeave: reset, onLeaveBack: reset })
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.intersectionRatio < 0.5) return
+        io.disconnect()
+        tween = gsap.to(state, { v: to, duration, ease: 'power3.out', onUpdate: show })
+        // Jaring pengaman: kalau animasi tersendat (tab di latar, hemat baterai), tetap berakhir di angka akhir
+        guard = window.setTimeout(() => tween?.progress(1), duration * 1000 + 700)
+      },
+      { threshold: 0.5 },
+    )
+    io.observe(el)
     return () => {
-      st.kill()
+      io.disconnect()
+      clearTimeout(guard)
       tween?.kill()
       el.textContent = fmt(to, decimals)
     }
