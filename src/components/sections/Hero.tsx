@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { navLinks, profile } from '../../data/profile'
 import { useContent } from '../../lib/content'
 import { CountUp } from '../ui/CountUp'
@@ -6,6 +7,13 @@ import StaggeredMenu from '../reactbits/StaggeredMenu'
 
 function Navbar() {
   const { hero } = useContent()
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const on = () => setScrolled(scrollY > 16)
+    on()
+    addEventListener('scroll', on, { passive: true })
+    return () => removeEventListener('scroll', on)
+  }, [])
   return (
     <div className="wrap">
       <header className="nav glass">
@@ -20,6 +28,9 @@ function Navbar() {
         <a className="btn solid" href="#kontak">Hubungi saya ↗</a>
       </header>
 
+      {/* di HP: bar latar di belakang menu agar teks yang di-scroll tidak bertabrakan dengan logo; muncul setelah scroll */}
+      <div className={`mbar${scrolled ? ' on' : ''}`} aria-hidden />
+
       {/* di HP: menu geser dari samping (React Bits StaggeredMenu) */}
       <div className="hidden max-[860px]:block">
         <StaggeredMenu
@@ -31,7 +42,7 @@ function Navbar() {
           colors={['#0d1626', '#2f7bf5']}
           accentColor="#2f7bf5"
           menuButtonColor="#0d1626"
-          openMenuButtonColor="#ffffff"
+          openMenuButtonColor="#0d1626"
         />
       </div>
     </div>

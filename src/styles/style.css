@@ -111,8 +111,14 @@ p { max-width: 62ch; }
 @media (max-width: 860px) {
   .nav nav, .nav .btn { display: none; }
   .nav .brand { visibility: hidden; }
+  .mbar { position: fixed; inset: 0 0 auto 0; z-index: 45; height: 76px; pointer-events: none; opacity: 0; transform: translateY(-14px); border-bottom: 1px solid var(--line); background: rgba(238, 243, 251, 0.96); box-shadow: 0 10px 24px -18px rgba(30, 70, 150, 0.45); transition: opacity 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  .mbar.on { opacity: 1; transform: none; }
   .nav { box-shadow: none; background: none; border: 0; backdrop-filter: none; padding-left: 4px; }
 }
+
+/* bar header mobile hanya dipakai di layar sempit */
+.mbar { display: none; }
+@media (max-width: 860px) { .mbar { display: block; } }
 
 /* ---------- hero ---------- */
 .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: center; padding-block: 44px 24px; }
@@ -171,12 +177,15 @@ p { max-width: 62ch; }
   line-height: 1.15;
 }
 .chip-top { left: auto; right: 0; top: 4%; bottom: auto; }
+@keyframes chip-float { to { transform: translateY(-6px); } }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; }
   .hero-photo { justify-self: center; width: min(78%, 360px); }
   .statbar { grid-template-columns: repeat(2, 1fr); row-gap: 18px; }
   .statbar div:nth-child(3) { border-left: 0; }
-  .chip { font-size: 18px; padding: 10px 16px; }
+  /* di HP kedua chip dipindah ke area bahu agar tidak menutupi wajah, ukurannya diperkecil, dan keduanya melayang pelan */
+  .chip { left: -3%; bottom: 3%; padding: 8px 14px; border-radius: 16px; font-size: 16px; animation: chip-float 5s ease-in-out infinite alternate; }
+  .chip-top { left: auto; right: -2%; top: auto; bottom: 18%; animation-delay: -2.5s; }
 }
 
 /* ---------- tentang ---------- */
@@ -384,4 +393,5 @@ p { max-width: 62ch; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
+  .chip { animation: none; }
 }

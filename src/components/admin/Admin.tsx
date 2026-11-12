@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Award, Briefcase, DatabaseZap, FolderKanban, LayoutDashboard, LogOut, PanelLeftClose, PanelLeftOpen, Plus, Sparkles, UserRound, Users } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Award, Briefcase, ChevronLeft, DatabaseZap, FolderKanban, LayoutDashboard, LogOut, Plus, Sparkles, UserRound, Users } from 'lucide-react'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { Session, SupabaseClient } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabase'
@@ -197,11 +197,14 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
             colors={['#0d1626', '#2f7bf5']}
             accentColor="#2f7bf5"
             menuButtonColor="#0d1626"
-            openMenuButtonColor="#ffffff"
+            openMenuButtonColor="#0d1626"
           />
         </div>
 
         <aside className="adm-side">
+          <button className="adm-collapse" onClick={toggleMini} aria-label={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'} title={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'}>
+            <ChevronLeft size={16} aria-hidden />
+          </button>
           <div className="adm-brand">
             <i>S</i>
             <div>
@@ -227,9 +230,6 @@ function Dashboard({ db, session }: { db: SupabaseClient; session: Session }) {
         <main className="adm-main">
           <div className="adm-bar">
             <div className="adm-crumb">
-              <button className="adm-icon mini-toggle" onClick={toggleMini} aria-label={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'} title={mini ? 'Perbesar sidebar' : 'Kecilkan sidebar'}>
-                {mini ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-              </button>
               {tab !== 'ringkasan' && <a className="adm-back-btn" href={href('ringkasan')}><ArrowLeft size={16} aria-hidden /> Ringkasan</a>}
               <span>{nav.find((n) => n.id === tab)?.label}</span>
             </div>
