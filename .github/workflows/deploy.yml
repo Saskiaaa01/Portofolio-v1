@@ -25,8 +25,9 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # URL dan kunci publishable memang publik; data dilindungi RLS (supabase/schema.sql)
+          VITE_SUPABASE_URL: https://fxtdejfvbpsktfkjvkct.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_P0KceOPiKoPS9J5lTTk1hQ_LTeIFgae
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -18,9 +18,7 @@ npm run build    # produksi (hasil di dist/)
    insert into admins (email) values ('email-admin-anda@gmail.com');
    ```
 4. **Matikan pendaftaran publik.** *Authentication → Sign In / Providers → Email* → matikan *Allow new users to sign up*.
-5. **Isi kunci.**
-   - Lokal: salin `.env.example` menjadi `.env` lalu isi dua nilainya.
-   - GitHub Pages: repo *Settings → Secrets and variables → Actions → New repository secret*, buat `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY`.
+5. **Isi kunci.** Lokal: salin `.env.example` menjadi `.env`. Deploy: URL dan kunci publishable sudah ada di `.github/workflows/deploy.yml` (aman, karena memang publik).
 6. Buka `/#/admin`, masuk, lalu tekan **Impor data awal** sekali untuk menyalin konten sekarang ke database.
 
 Kunci anon memang publik. Yang melindungi data adalah RLS di `schema.sql`: semua orang boleh membaca, hanya email di tabel `admins` yang boleh menulis.
