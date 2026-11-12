@@ -39,6 +39,7 @@ export function Experience() {
                   <h3>{j.title}</h3>
                   <div className="at">{j.at}</div>
                   <p>{j.text}</p>
+                  {j.image && <img className="photo" src={j.image} alt={`Foto ${j.title}`} loading="lazy" />}
                 </div>
               </div>
             ))}
@@ -65,6 +66,7 @@ export function Experience() {
                   <b>{a.title}</b>
                   <span>{a.meta}</span>
                   <p>{a.text}</p>
+                  {a.image && <img className="photo" src={a.image} alt={`Foto ${a.title}`} loading="lazy" />}
                 </li>
               ))}
             </ul>

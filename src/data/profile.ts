@@ -31,4 +31,3 @@ export const focusAreas = [
   { title: 'Dokumentasi sistem', text: 'Menulis BRD, SRS, FSD, dan buku panduan pengguna.' },
 ]
 
-export const tools = ['Laravel', 'PHP', 'SQL', 'ERD', 'Git dan GitHub', 'WhatsApp API', 'Pengujian fungsional', 'BRD, SRS, FSD', 'Microsoft Excel']

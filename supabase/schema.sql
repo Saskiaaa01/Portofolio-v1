@@ -44,6 +44,7 @@ create table if not exists experiences (
   title text not null,
   place text,
   text text,
+  image_url text,
   sort int not null default 0
 );
 
@@ -52,8 +53,13 @@ create table if not exists activities (
   title text not null,
   meta text,
   text text,
+  image_url text,
   sort int not null default 0
 );
+
+-- Untuk database yang sudah dibuat sebelum kolom foto ada (aman dijalankan ulang)
+alter table experiences add column if not exists image_url text;
+alter table activities add column if not exists image_url text;
 
 -- Daftar akun yang boleh mengubah konten. Isi email admin lewat SQL Editor (lihat README), jangan di repo.
 create table if not exists admins (email text primary key);

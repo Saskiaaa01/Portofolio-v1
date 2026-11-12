@@ -111,7 +111,7 @@ export function ResourceEditor({ db, resource, icon, onChanged }: Props) {
           {shown.map((r, i) => (
             <article
               key={r.id}
-              className={`adm-item${dragId === r.id ? ' dragging' : ''}${overId === r.id && dragId !== r.id ? ' over' : ''}`}
+              className={`adm-item${r.image_url ? '' : ' plain'}${dragId === r.id ? ' dragging' : ''}${overId === r.id && dragId !== r.id ? ' over' : ''}`}
               style={{ '--i': i } as React.CSSProperties}
               draggable={!q}
               onDragStart={() => setDragId(r.id)}
@@ -119,14 +119,23 @@ export function ResourceEditor({ db, resource, icon, onChanged }: Props) {
               onDragOver={(e) => { if (dragId) { e.preventDefault(); setOverId(r.id) } }}
               onDrop={(e) => { e.preventDefault(); drop(r.id) }}
             >
-              <div className="adm-thumb">
-                {r.image_url ? <img src={r.image_url} alt="" /> : <span>{icon}</span>}
-                {!q && <i className="adm-grip" aria-hidden><GripVertical size={16} /></i>}
-                <b className="adm-no">{String(i + 1).padStart(2, '0')}</b>
-              </div>
+              {r.image_url ? (
+                <div className="adm-thumb">
+                  <img src={r.image_url} alt="" />
+                  {!q && <i className="adm-grip" aria-hidden><GripVertical size={16} /></i>}
+                  <b className="adm-no">{String(i + 1).padStart(2, '0')}</b>
+                </div>
+              ) : (
+                <div className="adm-plain-top">
+                  <b className="adm-no">{String(i + 1).padStart(2, '0')}</b>
+                  {r.year && <strong className="adm-year">{r.year}</strong>}
+                  {!q && <i className="adm-grip" aria-hidden><GripVertical size={16} /></i>}
+                </div>
+              )}
               <div className="adm-item-body">
                 <h3>{r[resource.titleKey]}</h3>
                 {resource.subKey && r[resource.subKey] && <p>{r[resource.subKey]}</p>}
+                {r.text && <span className="adm-snip">{r.text}</span>}
                 {tagsOf(r).length > 0 && <div className="adm-chips">{tagsOf(r).map((t) => <span key={t}>{t}</span>)}</div>}
               </div>
               <div className="adm-item-actions">

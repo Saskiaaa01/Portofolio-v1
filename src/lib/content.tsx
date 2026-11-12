@@ -6,8 +6,8 @@ import { certificates as staticCerts, projects as staticProjects, skills as stat
 export type Project = { title: string; role: string; image: string; alt: string; text: string; tags: string[] }
 export type Certificate = { image: string; alt: string; zoom: string; position?: string; when: string; title: string; by: string; text: string }
 export type Skill = { title: string; text: string; chips: string[] }
-export type Job = { year: string; when: string; title: string; at: string; text: string }
-export type Activity = { title: string; meta: string; text: string }
+export type Job = { year: string; when: string; title: string; at: string; text: string; image?: string }
+export type Activity = { title: string; meta: string; text: string; image?: string }
 export type Content = {
   hero: { intro: string; fact: string; photo: string; linkedin: string }
   projects: Project[]
@@ -56,8 +56,8 @@ async function load(): Promise<Content | null> {
       ? certs.map((r) => ({ image: str(r.image_url), alt: `Sertifikat ${str(r.title)}`, zoom: `Perbesar sertifikat ${str(r.title)}`, when: str(r.issued_on), title: str(r.title), by: str(r.issuer), text: str(r.text) }))
       : fallback.certificates,
     skills: skills.length ? skills.map((r) => ({ title: str(r.title), text: str(r.text), chips: r.chips ?? [] })) : fallback.skills,
-    jobs: exps.length ? exps.map((r) => ({ year: str(r.year), when: str(r.period), title: str(r.title), at: str(r.place), text: str(r.text) })) : fallback.jobs,
-    activities: acts.length ? acts.map((r) => ({ title: str(r.title), meta: str(r.meta), text: str(r.text) })) : fallback.activities,
+    jobs: exps.length ? exps.map((r) => ({ year: str(r.year), when: str(r.period), title: str(r.title), at: str(r.place), text: str(r.text), image: str(r.image_url) || undefined })) : fallback.jobs,
+    activities: acts.length ? acts.map((r) => ({ title: str(r.title), meta: str(r.meta), text: str(r.text), image: str(r.image_url) || undefined })) : fallback.activities,
   }
 }
 

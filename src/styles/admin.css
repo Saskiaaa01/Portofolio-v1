@@ -125,7 +125,8 @@
 .adm-grip { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: rgba(255, 255, 255, 0.9); color: var(--muted); opacity: 0; transition: opacity 0.2s; }
 .adm-item:hover .adm-grip { opacity: 1; }
 .adm-no { position: absolute; top: 10px; left: 10px; display: grid; place-items: center; min-width: 32px; height: 28px; padding: 0 8px; border-radius: 9px; background: rgba(13, 22, 38, 0.82); color: #fff; font-size: 12px; }
-.adm-item-body { display: grid; gap: 6px; flex: 1; align-content: start; padding: 16px 18px 12px; }
+.adm-item-body { display: grid; gap: 6px; flex: 1; align-content: start; padding: 16px 18px 56px; }
+.adm-snip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 13.5px; line-height: 1.55; color: var(--muted); }
 .adm-item-body h3 { font-size: 17px; line-height: 1.25; }
 .adm-item-body p { font-size: 13.5px; color: var(--blue); font-weight: 600; }
 .adm-item-actions { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity 0.2s, transform 0.2s; }
@@ -214,3 +215,12 @@ html:has(.adm-app) { scrollbar-width: thin; scrollbar-color: rgba(47, 123, 245, 
 html:has(.adm-app)::-webkit-scrollbar { width: 8px; }
 html:has(.adm-app)::-webkit-scrollbar-button { display: none; }
 html:has(.adm-app)::-webkit-scrollbar-thumb { border-radius: 8px; background: rgba(47, 123, 245, 0.35); }
+
+/* kartu tanpa foto (keahlian, pengalaman, kegiatan): kepala berwarna, bukan kotak gambar kosong */
+.adm-item.plain::before { content: ""; height: 5px; background: linear-gradient(90deg, var(--blue), var(--sky)); }
+.adm-plain-top { display: flex; align-items: center; gap: 10px; padding: 16px 18px 0; }
+.adm-plain-top .adm-no { position: static; }
+.adm-year { margin-left: auto; font-size: 26px; font-weight: 700; letter-spacing: -0.04em; color: var(--blue); }
+.adm-plain-top .adm-grip { position: static; margin-left: auto; opacity: 0; transition: opacity 0.2s; }
+.adm-plain-top .adm-year + .adm-grip { margin-left: 4px; }
+.adm-item.plain:hover .adm-grip { opacity: 1; }
