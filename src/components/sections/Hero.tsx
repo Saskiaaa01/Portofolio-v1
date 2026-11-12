@@ -66,8 +66,8 @@ export function Hero() {
             ))}
           </div>
         </div>
-        <div className="hero-photo" data-reveal>
-          <img src={hero.photo} alt={`Foto ${profile.name}`} />
+        <div className="hero-photo">
+          <img src={hero.photo} alt={`Foto ${profile.name}`} fetchPriority="high" decoding="async" />
           <div className="chip chip-top glass">Terbuka untuk<br />posisi QA &amp; web</div>
           <div className="chip glass">Teliti dulu,<br />baru cepat</div>
         </div>

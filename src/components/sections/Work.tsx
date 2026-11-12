@@ -77,7 +77,7 @@ export function Work() {
             {shownProjects.map((p, n) => (
               <article className="pcard glass" key={p.title} data-reveal>
                 <figure className="shot">
-                  <img src={p.image} alt={p.alt} />
+                  <img src={p.image} alt={p.alt} loading="lazy" decoding="async" />
                   <b>0{n + 1}</b>
                 </figure>
                 <h3>{p.title}</h3>
@@ -122,7 +122,7 @@ export function Work() {
             {shownCerts.map((c) => (
               <div className="cert glass" key={c.title} data-reveal>
                 <button className="thumb" aria-label={c.zoom} onClick={() => setZoom({ src: c.image, alt: c.alt })}>
-                  <img src={c.image} alt={c.alt} style={c.position ? { objectPosition: c.position } : undefined} />
+                  <img src={c.image} alt={c.alt} loading="lazy" decoding="async" style={c.position ? { objectPosition: c.position } : undefined} />
                 </button>
                 <div className="when">{c.when}</div>
                 <h3>{c.title}</h3>

@@ -30,15 +30,17 @@ const fallback: Content = {
 type Row = Record<string, any>
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
 
+const API = import.meta.env.VITE_SUPABASE_URL
+const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+// Membaca lewat REST langsung: supabase-js (±54 KB gzip) hanya dimuat di dashboard, bukan di situs publik
 async function load(): Promise<Content | null> {
-  if (!import.meta.env.VITE_SUPABASE_URL) return null
-  const { supabase } = await import('./supabase')
-  if (!supabase) return null
+  if (!API || !KEY) return null
   const get = async (table: string): Promise<Row[]> => {
-    const q = supabase.from(table).select('*')
-    const { data, error } = await (table === 'profile' ? q : q.order('sort', { ascending: true }))
-    if (error) throw error
-    return data ?? []
+    const order = table === 'profile' ? '' : '&order=sort.asc'
+    const r = await fetch(`${API}/rest/v1/${table}?select=*${order}`, { headers: { apikey: KEY, Authorization: `Bearer ${KEY}` } })
+    if (!r.ok) throw new Error(`${table}: ${r.status}`)
+    return r.json()
   }
   const [profile, projects, certs, skills, exps, acts] = await Promise.all(['profile', 'projects', 'certificates', 'skills', 'experiences', 'activities'].map(get))
   const p = profile[0]
@@ -64,10 +66,29 @@ async function load(): Promise<Content | null> {
 const Ctx = createContext<Content>(fallback)
 export const useContent = () => useContext(Ctx)
 
+// Hasil terakhir disimpan di browser: kunjungan berikutnya langsung tampil, lalu disegarkan di latar belakang
+const CACHE = 'portfolio-content-v1'
+const cached = (): Content | null => {
+  try {
+    return JSON.parse(localStorage.getItem(CACHE) ?? 'null')
+  } catch {
+    return null
+  }
+}
+
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<Content>(fallback)
+  const [content, setContent] = useState<Content>(() => cached() ?? fallback)
   useEffect(() => {
-    load().then((c) => c && setContent(c), () => {})
+    load().then(
+      (c) => {
+        if (!c) return
+        setContent(c)
+        try {
+          localStorage.setItem(CACHE, JSON.stringify(c))
+        } catch {}
+      },
+      () => {},
+    )
   }, [])
   return <Ctx.Provider value={content}>{children}</Ctx.Provider>
 }
